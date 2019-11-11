@@ -34,10 +34,15 @@ def get_data_from_api(airport:str,start_time:int,end_time:int):
         elif response_from_api.status_code == 404:
             print("Data Not Found")
             return None
-        
+
+def read_from_csv(filename:str):
+    
+
+   
 def get_coordinates(start:int, end:int):
     outputData = []
-    flights = get_data_from_api()
+    flights = get_data_from_api(airport,start,end)
+    airports_from_csv = read_from_csv("airports.csv")
             
 
 flights = get_data_from_api("KSEA",start_time,end_time)
