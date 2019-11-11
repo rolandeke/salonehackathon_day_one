@@ -34,7 +34,8 @@ def get_data_from_api(airport:str,start_time:int,end_time:int):
             print("Data Not Found")
             return None
         
-
+def get_coordinates():
+    outputData = []
             
 
 flights = get_data_from_api("KSEA",start_time,end_time)
