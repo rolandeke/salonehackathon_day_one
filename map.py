@@ -3,6 +3,7 @@ from requests.exceptions import HTTPError
 import typing 
 import time
 from typing import Dict
+import csv
 
 username = "pdtpatrick"
 password = "u3!WL2uC0dxu"
@@ -36,8 +37,29 @@ def get_data_from_api(airport:str,start_time:int,end_time:int):
             return None
 
 def read_from_csv(filename:str):
-    
+        keys = [
+        "id",
+        "name",
+        "city",
+        "country",
+        "IATA",
+        "ICAO",
+        "latitude",
+        "longitude",
+        "altitude",
+        "timezone",
+        "dst",
+        "tz",
+        "type",
+        "source",
+    ]
+        airports = csv.DictReader(
+            open(filename,encoding="utf-8"), delimiter=",", quotechar='"', fieldnames=keys
+        )
+        d = {airport["ICAO"]: airport for airport in airports}
+        return d
 
+   
    
 def get_coordinates(start:int, end:int):
     outputData = []
