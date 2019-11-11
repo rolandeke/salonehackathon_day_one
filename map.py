@@ -4,6 +4,7 @@ import typing
 import time
 from typing import Dict
 import csv
+import json
 
 username = "pdtpatrick"
 password = "u3!WL2uC0dxu"
@@ -65,6 +66,31 @@ def get_coordinates(start:int, end:int):
     outputData = []
     flights = get_data_from_api(airport,start,end)
     airports_from_csv = read_from_csv("airports.csv")
+    
+    #looping through all flights returned by the api
+    for arrivals in flights:
+        #get the airport names and store in variables
+        departureAirport = arrivals['estDepartureAirport']
+        arrivalAirport = arrivals['estArrivalAirport']
+        
+        #get latitude and long of departure airport from dict returned by csv
+        if departureAirport  in airports_from_csv:
+            dept_lat = airports_from_csv[departureAirport]['latitude']
+            dept_lon = airports_from_csv[departureAirport]['longitude']
+            
+        if arrivalAirport in airports_from_csv:
+            arr_lat = airports_from_csv[arrivalAirport]['latitude']
+            arr_lon = airports_from_csv[arrivalAirport]['longitude']
+            
+        outputData.append({
+            "deptLat" : dept_lat,
+            "deptLon" : dept_lon,
+            "arrLon" : arr_lon,
+            "arr_lat" : arr_lat 
+        })
+        
+        return json.dumps(outputData)
+        
             
 
 flights = get_data_from_api("KSEA",start_time,end_time)
