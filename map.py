@@ -9,6 +9,7 @@ password = "u3!WL2uC0dxu"
 current_time = int(time.time())
 start_time = current_time - (3600 * 48)
 end_time = current_time
+airport = "KSEA"
 
 def get_data_from_api(airport:str,start_time:int,end_time:int):
     """
@@ -34,8 +35,9 @@ def get_data_from_api(airport:str,start_time:int,end_time:int):
             print("Data Not Found")
             return None
         
-def get_coordinates():
+def get_coordinates(start:int, end:int):
     outputData = []
+    flights = get_data_from_api()
             
 
 flights = get_data_from_api("KSEA",start_time,end_time)
