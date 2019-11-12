@@ -34,10 +34,12 @@ def get_data_from_api(airport:str,start_time:int,end_time:int):
         response_from_api.raise_for_status()
     except HTTPError as error:
         print(error)
+    except Timeout as touterr:
+        print("Request Timed Out")
     else:
         if response_from_api.status_code == 200:
-            assert len(response_from_api.json()) != 0
-            return response_from_api.json()
+                assert len(response_from_api.json()) != 0
+                return response_from_api.json()
         elif response_from_api.status_code == 404:
             print("Data Not Found")
             return None
@@ -78,9 +80,11 @@ def get_coordinates(st:int ,en:int) -> List[Dict[str , str]]:
     airData = get_data_from_api(airport,st,en)
     arr_lat = csvData[airport]['latitude']
     arr_lon = csvData[airport]['longitude']
+    arr_name = airport
     
     for flight in get_data_from_api(airport,st,en):
         dept_air = flight['estDepartureAirport']
+        
         if dept_air in csvData:
             dep_lat = csvData[dept_air]['latitude']
             dep_lon = csvData[dept_air]['longitude']
@@ -89,7 +93,9 @@ def get_coordinates(st:int ,en:int) -> List[Dict[str , str]]:
                         "arrLat" : arr_lat,
                         "depLat": dep_lat, 
                         "arrLon" : arr_lon,
-                        "depLon" : dep_lon 
+                        "depLon" : dep_lon,
+                        "arr_name" : arr_name,
+                        "dep_name" : dept_air
                     }
         outputData.append(outputdict)
         
@@ -134,7 +140,25 @@ def draw_map(coordinates:list):
     ax.set_title('Flight Movement Map From EDDF Airport By Chinedum Roland Eke')
     plt.show()
     
-    
 
-cords = get_coordinates(start_time, end_time)
-draw_map(cords)
+def get_airport_name(start_time:int, end_time:int):
+    outputData = []
+    data_from_api = get_data_from_api(airport,start_time,end_time)
+    
+    arr_name = airport 
+    #loop through the data from the API
+    for flights in data_from_api:
+        dept_name = flights['estDepartureAirport']
+        outputData.append({
+            "ComingFrom": arr_name,
+            "GoingTo" : dept_name
+        })
+     
+    return outputData
+    
+        
+ariport_names = get_airport_name(start_time,end_time)
+print(type(ariport_names), len(ariport_names))
+print(ariport_names[0 : 11])
+# cords = get_coordinates(start_time, end_time)
+# draw_map(cords)
