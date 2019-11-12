@@ -16,7 +16,7 @@ password = "u3!WL2uC0dxu"
 current_time = int(time.time())
 start_time = current_time - (3600 * 48)
 end_time = current_time
-airport = "KSEA"
+airport = "EDDF"
 
 def get_data_from_api(airport:str,start_time:int,end_time:int):
     """
@@ -66,35 +66,6 @@ def read_from_csv(filename:str):
         return d
 
    
-   
-# def get_coordinates(start:int, end:int):
-#     outputData = []
-#     flights = get_data_from_api(airport,start,end)
-#     airports_from_csv = read_from_csv("airports.csv")
-    
-#     #looping through all flights returned by the api
-#     for arrivals in flights:
-#         #get the airport names and store in variables
-#         departureAirport = arrivals['estDepartureAirport']
-#         arrivalAirport = arrivals['estArrivalAirport']
-        
-#         #get latitude and long of departure airport from dict returned by csv
-#         if departureAirport  in airports_from_csv:
-#             dept_lat = airports_from_csv[departureAirport]['latitude']
-#             dept_lon = airports_from_csv[departureAirport]['longitude']
-            
-#         if arrivalAirport in airports_from_csv:
-#             arr_lat = airports_from_csv[arrivalAirport]['latitude']
-#             arr_lon = airports_from_csv[arrivalAirport]['longitude']
-            
-#         outputData.append({
-#             "deptLat" : dept_lat,
-#             "deptLon" : dept_lon,
-#             "arrLon" : arr_lon,
-#             "arr_lat" : arr_lat 
-#         })
-        
-#         return outputData
 
 def get_coordinates(st:int ,en:int) -> List[Dict[str , str]]:
     
@@ -120,37 +91,46 @@ def get_coordinates(st:int ,en:int) -> List[Dict[str , str]]:
         
     return outputData
     
-    
-cords = get_coordinates(start_time, end_time)
-
-
 
 def draw_map(coordinates:list):
+    
+    """
+        This function draws a map for a list of 
+        Coordinates that would be passed as a parameter
+        The function loops through the list of 
+        coordinates and then plots the map for every departure airport from the 
+        arrival airport.
+        :params List[Dict[str,str]]
+    """
    
     fig=plt.figure()
     ax=fig.add_axes([0.1,0.1,0.8,0.8])
     m = Basemap(\
                 rsphere=(6378137.00,6356752.3142),\
                 resolution='l',projection='cyl',\
-                lat_0=40.,lon_0=-20.,lat_ts=20.)
+                )
+    arrlon = float(coordinates[0]['arrLon'])
+    arrlat = float(coordinates[0]['arrLat'])
     
-    deplon = float(coordinates[10]['depLon'])
-    deplat = float(coordinates[10]['depLat'])
-    arrlon = float(coordinates[10]['arrLon'])
-    arrlat = float(coordinates[10]['arrLat'])
-    # nylat = 40.78; nylon = -73.98
-    # # lonlat, lonlon are lat/lon of London.
-    # lonlat = 51.53; lonlon = 0.08
-    # # draw great circle route between NY and London
-    m.drawgreatcircle(deplon,deplat,arrlon,arrlat,linewidth=2,color='b')
+    for i in range(len(coordinates)):
+        deplon = float(coordinates[i]['depLon'])
+        deplat = float(coordinates[i]['depLat'])
+        # # draw great circle route between Arrival and Department Airport
+        m.drawgreatcircle(deplon,deplat,arrlon,arrlat,linewidth=1,color='r')
+        m.plot(deplon,deplat, marker='o',color='b')
+        
+        
     m.drawcoastlines()
     m.fillcontinents()
-    # draw parallels
+    m.drawmapboundary(fill_color='aqua')
+    #draw parallels
     m.drawparallels(np.arange(10,90,20),labels=[1,1,0,1])
-    # draw meridians
+    #draw meridians
     m.drawmeridians(np.arange(-180,180,30),labels=[1,1,0,1])
-    ax.set_title('Flight Movement Map')
+    ax.set_title('Flight Movement Map From EDDF Airport By Chinedum Roland Eke')
     plt.show()
+    
+    
 
-
+cords = get_coordinates(start_time, end_time)
 draw_map(cords)
