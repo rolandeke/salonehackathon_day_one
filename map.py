@@ -68,6 +68,10 @@ def read_from_csv(filename:str):
    
 
 def get_coordinates(st:int ,en:int) -> List[Dict[str , str]]:
+    """
+        This function is used to get the coordinates of all airport flights 
+        that would be departing from the airport 
+    """
     
     outputData = []
     csvData = read_from_csv('airports.csv')
